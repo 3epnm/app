@@ -1,0 +1,21 @@
+  <div class="mdl-card__title">
+    <canvas class="chart"></canvas>
+  </div>
+  <div class="mdl-card__supporting-text">
+    {{title}}
+    <span class="lastValue"></span> 
+  </div>
+  <div class="mdl-card__actions mdl-card--border">
+    {{!-- #each sensors}}
+        <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="checkbox-{{name}}">
+            <input type="checkbox" id="checkbox-{{name}}" class="mdl-checkbox__input" checked>
+            <span class="mdl-checkbox__label">{{name}}</span>
+        </label>
+    {{/each --}}
+  </div>
+  <div class="mdl-card__menu">
+    <button class="mdl-button mdl-button--icon mdl-js-button mdl-js-ripple-effect">
+      <i class="material-icons">settings</i>
+    </button>
+  </div>
+

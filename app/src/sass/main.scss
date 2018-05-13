@@ -1,0 +1,77 @@
+.sensor-card-wide {
+  &.mdl-card {
+    width: calc(50% - 20px);
+    max-width: 500px;
+    margin: 10px;
+    float: left;
+  }
+  
+  .mdl-checkbox {
+    width: 200px;
+  }
+
+  .mdl-card__menu {
+    position: absolute;
+    right: 3px;
+    top: 3px;
+  }
+
+  .mdl-card__title {
+    height: 270px;
+    position: relative;
+    padding-bottom: 0px;
+
+    .mdl-button__ripple-container {
+      color: navy;
+    }
+
+    .mdl-card__title-text {
+      position: absolute;
+    }
+  }
+
+  .mdl-card__actions {
+    min-height: 55px;
+  }
+
+  .mdl-card__supporting-text {
+    width: auto;
+    .lastValue {
+      float: right;
+    }
+  }
+}
+
+.demo-card-wide {
+  &.mdl-card {
+    width: calc(50% - 20px);
+    margin: 10px;
+    float: left;
+  }
+
+  .mdl-card__title {
+    color: #fff;
+    height: 270px;
+    background: url('./welcome_card.jpg') center / cover;
+  }
+
+  .mdl-card__menu {
+    position: absolute;
+    right: 5px;
+    top: 6px;
+  }
+  
+  .mdl-card__menu {
+    color: #fff;
+  }
+
+  .mdl-card__actions {
+    min-height: 55px;
+  }
+}
+
+.dashboard, .sensor {
+  padding: 10px;
+  max-width: 1040px;
+  margin: 0 auto;
+}

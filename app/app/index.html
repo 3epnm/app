@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>App</title>
+  
+  <link rel="stylesheet" href="./contrib/material.min.css">
+  <script src="./contrib/material.min.js"></script>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+
+  <link rel="stylesheet" type="text/css" href="main.css">
+  <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+</head>
+<body>
+  <!-- Always shows a header, even in smaller screens. -->
+  <div class="mdl-layout mdl-js-layout mdl-layout--fixed-header">
+      <header class="mdl-layout__header">
+        <div class="mdl-layout__header-row">
+          <!-- Title -->
+          <span class="mdl-layout-title">App</span>
+          <!-- Add spacer, to align navigation to the right -->
+          <div class="mdl-layout-spacer"></div>
+          <!-- Navigation -->
+          <nav class="mdl-navigation">
+            <a class="mdl-navigation__link" href="#dashboard">Dashboard</a>
+            <a class="mdl-navigation__link" href="#sensors">Sensor</a>
+            <a class="mdl-navigation__link" href="#relays">Relay</a>
+            <a class="mdl-navigation__link" href="#pumps">Pump</a>
+          </nav>
+        </div>
+      </header>
+      <!-- <div class="mdl-layout__drawer">
+        <span class="mdl-layout-title">Settings</span>
+        <nav class="mdl-navigation">
+          <a class="mdl-navigation__link" href="">...</a>
+        </nav>
+      </div> -->
+      <main class="mdl-layout__content">
+        <div class="page-content"></div>
+      </main>
+    </div>
+  <script src="bundle.js"></script>
+</body>
+</html>

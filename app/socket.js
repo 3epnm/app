@@ -5,6 +5,31 @@ var redis = require("redis");
 
 var io = require('socket.io')(server);
 
+var subscribeGpio = function (client) {
+    var redis_client = redis.createClient();
+
+    redis_client.on('message', function (channel, message) {
+        message = JSON.parse(message);
+        client.emit('gpio', message);
+    });
+
+    redis_client.subscribe('gpio:state');
+
+    client.on('gpio', function (message) {
+        var redis_publish = redis.createClient();
+        redis_publish.publish('gpio:set', JSON.stringify(message));
+    });
+
+    client.on('disconnect', function() {
+        redis_client.unsubscribe();
+        redis_client.quit();
+    });
+}
+
+io.of('/gpio').on('connection', function(client) {
+    subscribeGpio(client);
+});
+
 var subscribeTemperature = function (client) {
     var map_data = {
         "temp0": "28FF8C56911501BD",
@@ -49,7 +74,7 @@ var subscribeDistance = function (client) {
         var time = Math.floor(Date.now() / 1000);
         var item = {
             time: time,
-            distance: message
+            distance: Number(message)
         };
 
         client.emit('distance', item);
@@ -65,6 +90,69 @@ var subscribeDistance = function (client) {
 
 io.of('/distance').on('connection', function(client) {
     subscribeDistance(client);
+});
+
+var subscribePh = function (client) {
+    var redis_client = redis.createClient();
+
+    redis_client.on('message', function (channel, message) {
+        message = JSON.parse(message);
+
+        var time = Math.floor(Date.now() / 1000);
+        var item = {
+            time: time,
+            ph: Number(message)
+        };
+
+        client.emit('ph', item);
+    });
+
+    redis_client.subscribe('ph');
+
+    client.on('disconnect', function() {
+        redis_client.unsubscribe();
+        redis_client.quit();
+    });
+}
+
+io.of('/ph').on('connection', function(client) {
+    subscribePh(client);
+});
+
+var subscribeConductivity = function (client) {
+    var map_data = {
+        "ec": "ec",
+        "tds": "tds",
+        "sal": "sal"
+    };
+
+    var redis_client = redis.createClient();
+
+    redis_client.on('message', function (channel, message) {
+        message = JSON.parse(message);
+
+        var time = Math.floor(Date.now() / 1000);
+        var item = {
+            time: time
+        };
+
+        _.each(map_data, function (val, key) {
+            item[val] = Number(message[key]);
+        });
+
+        client.emit('conductivity', item);
+    });
+
+    redis_client.subscribe('conductivity');
+
+    client.on('disconnect', function() {
+        redis_client.unsubscribe();
+        redis_client.quit();
+    });
+}
+
+io.of('/conductivity').on('connection', function(client) {
+    subscribeConductivity(client);
 });
 
 server.listen(3000);

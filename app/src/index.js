@@ -6,14 +6,23 @@ import { default as dashboard_item_template } from './dashboard_item_template.hb
 import { default as moment } from 'moment';
 
 import { SensorModel } from './models/SensorModel';
+import { SwitchesModel } from './models/SwitchesModel';
 
+import { GpioCollection } from './models/GpioCollection';
 import { TemperatureCollection } from './models/TemperatureCollection';
 import { DistanceCollection } from './models/DistanceCollection';
+import { PhCollection } from './models/PhCollection';
+import { ConductivityCollection } from './models/ConductivityCollection';
 
 import { SensorView } from './views/SensorView';
 import { Dashboard } from './views/DashBoard';
+import { SwitchesLayout } from './views/SwitchesLayout';
 
-import { distanceSensorModel, temperatureSensorModel, dashboardCollection } from './init';
+import { 
+  switchesModel, distanceSensorModel, temperatureSensorModel, 
+  phSensorModel, conductivitySensorModel, ecSensorModel,
+  tdsSensorModel, salSensorModel,
+  dashboardCollection, qualityCollection } from './init';
 
 const MainController = Mn.Object.extend({
   showDashboard: function () {
@@ -21,6 +30,16 @@ const MainController = Mn.Object.extend({
     
     let view = new Dashboard({
       collection: dashboardCollection
+    });
+
+    layout.showView(view);
+  },
+
+  showQuality: function () {
+    const layout = this.getOption('layout');
+    
+    let view = new Dashboard({
+      collection: qualityCollection
     });
 
     layout.showView(view);
@@ -37,7 +56,13 @@ const MainController = Mn.Object.extend({
   },
 
   showRelay: function () {
+    const layout = this.getOption('layout');
 
+    let view = new SwitchesLayout({
+      model: switchesModel
+    });
+
+    layout.showView(view);
   },
 
   showPump: function () {
@@ -45,6 +70,26 @@ const MainController = Mn.Object.extend({
 
     let view = new SensorView({
       model: distanceSensorModel
+    })
+
+    layout.showView(view);
+  },
+
+  showPh: function () {
+    const layout = this.getOption('layout');
+
+    let view = new SensorView({
+      model: phSensorModel
+    })
+
+    layout.showView(view);
+  },
+
+  showConductivity: function () {
+    const layout = this.getOption('layout');
+
+    let view = new SensorView({
+      model: conductivitySensorModel
     })
 
     layout.showView(view);
@@ -60,7 +105,10 @@ var Router = Mn.AppRouter.extend({
     'sensors': 'showSensor',
     'relays': 'showRelay',
     'pumps': 'showPump',
+    'ph': 'showPh',
+    'conductivity': 'showConductivity',
     'dashboard': 'showDashboard',
+    'quality': 'showQuality',
     '': 'showDashboard'
   }
 });
@@ -79,10 +127,33 @@ var App = Mn.Application.extend({
 
 var app = new App();
 
-var temperature = new TemperatureCollection();
+const host = 'http://' + location.hostname;
+
+var temperature = new TemperatureCollection(null, { host: host });
 temperatureSensorModel.set('data', temperature);
 
-var distance = new DistanceCollection();
+var distance = new DistanceCollection(null, { host: host });
 distanceSensorModel.set('data', distance);
 
-Backbone.$.when(temperature.fetch(), distance.fetch()).done(() => app.start());
+var ph = new PhCollection(null, { host: host });
+phSensorModel.set('data', ph);
+
+var conductivity = new ConductivityCollection(null, { host: host });
+conductivitySensorModel.set('data', conductivity);
+ecSensorModel.set('data', conductivity);
+tdsSensorModel.set('data', conductivity);
+salSensorModel.set('data', conductivity);
+
+var gpio = new GpioCollection(null, { host: host });
+switchesModel.set('data', gpio);
+
+Backbone.$.when(
+  gpio.fetch(), temperature.fetch(), distance.fetch(), 
+  ph.fetch(), conductivity.fetch()).done(() => app.start());
+
+window.collections = {
+  temperature: temperature,
+  distance: distance,
+  ph: ph,
+  conductivity: conductivity
+}

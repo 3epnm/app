@@ -1,15 +1,25 @@
 import { default as _ } from 'underscore';
 import { default as Mn } from 'backbone.marionette';
-import { default as sensors_template } from './sensorView.hbs';
+import { default as template } from './sensorView.hbs';
 import { default as Chart } from 'chart.js';
+import { default as moment } from 'moment';
 
 export const SensorView = Mn.View.extend({
-    template: sensors_template,
+    template: template,
     className: 'sensor-card-wide mdl-card mdl-shadow--2dp',
-  
+
     initialize: function () {
       this.collection = this.model.get('data');
-  
+
+      let ticks = (this.model.has('min') && this.model.has('max')) && {
+        min: this.model.get('min'),
+        max: this.model.get('max')
+      };
+
+      let yAxes = this.model.get('yAxes') || ticks && [{
+        ticks: ticks
+      }];
+
       this.graphConfig = {
         type: 'line',
         data: { 
@@ -24,14 +34,23 @@ export const SensorView = Mn.View.extend({
           },
           scales: {
             xAxes: [{
-              type: 'time'
-            }]
+              type: 'time',
+              time: {
+                unit: 'minute',
+                min: moment().subtract(5, 'minutes'),
+                max: moment(),
+                displayFormats: {
+                  minute: 'mm'
+                }
+              }
+            }],
+            yAxes: yAxes
           }
         }
       };
   
       _.each(this.model.get('sensors'), item => {
-        this.graphConfig.data.datasets.push({ 
+        let series = { 
           label: item.name,
           data: this.collection.getSeries(item.name),
           borderColor: item.color,
@@ -39,20 +58,28 @@ export const SensorView = Mn.View.extend({
           pointRadius: 0,
           borderWidth: 2,
           fill: false
-        });
+        };
+
+        if (item.id) {
+          series.yAxisID = item.id;
+        }
+
+        this.graphConfig.data.datasets.push(series);
       });
     },
   
     update: function (model) {
       if (!this.chart) return;
-  
+
+      this.chart.options.scales.xAxes[0].time.min = moment().subtract(2, 'minutes');
+      this.chart.options.scales.xAxes[0].time.max = moment();
+
       let text = [];
       _.each(this.model.get('sensors'), (item, ind) => {
-        this.graphConfig.data.datasets[ind].data = this.collection.getSeries(item.name);
-        text.push(this.collection.last().getData(item.name).y + this.model.get('unit'));
+        this.chart.data.datasets[ind].data = this.collection.getSeries(item.name);
+        text.push(this.collection.last().getData(item.name).y + item.unit);
       });
       this.$el.find('.lastValue').html(text.join(', '));
-
       this.chart.update();
     },
   
@@ -60,12 +87,14 @@ export const SensorView = Mn.View.extend({
       var ctx = this.$el.find('.chart')[0].getContext('2d');
       this.chart = new Chart(ctx, this.graphConfig);
   
-      let text = [];
-      _.each(this.model.get('sensors'), (item, ind) => {
-        text.push(this.collection.last().getData(item.name).y + this.model.get('unit'));
-      });
-      this.$el.find('.lastValue').html(text.join(', '));
+      if (this.collection.length > 0) {
+        let text = [];
+        _.each(this.model.get('sensors'), (item, ind) => {
+          text.push(this.collection.last().getData(item.name).y + item.unit);
+        });
+        this.$el.find('.lastValue').html(text.join(', '));
+      }
 
-      this.listenTo(this.collection, 'remove', this.update);
+      this.listenTo(this.collection, 'add', this.update);
     }
   });

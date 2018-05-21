@@ -11,15 +11,17 @@
   }
 
   .mdl-card__menu {
+    color: #fff;
     position: absolute;
-    right: 3px;
-    top: 3px;
+    top: 5px;
+    right: 5px;
   }
 
   .mdl-card__title {
+    color: #fff;
     height: 270px;
     position: relative;
-    padding-bottom: 0px;
+    padding: 0px 5px 0px 5px;
 
     .mdl-button__ripple-container {
       color: navy;
@@ -42,7 +44,7 @@
   }
 }
 
-.demo-card-wide {
+.dashbord-card-wide {
   &.mdl-card {
     width: calc(50% - 20px);
     margin: 10px;
@@ -52,7 +54,7 @@
   .mdl-card__title {
     color: #fff;
     height: 270px;
-    background: url('./welcome_card.jpg') center / cover;
+    padding-bottom: 0px;
   }
 
   .mdl-card__menu {
@@ -74,4 +76,22 @@
   padding: 10px;
   max-width: 1040px;
   margin: 0 auto;
+}
+
+.switches {
+  li {
+    width: 50%;
+    float: left;
+  }
+}
+
+.mdl-card__actions {
+  display: none;
+}
+
+.sensor-card-wide .mdl-card__menu {
+  color: transparent;
+  &:hover {
+    color: #b5b5b5;
+  }
 }

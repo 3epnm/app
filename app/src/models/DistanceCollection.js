@@ -3,18 +3,29 @@ import { DistanceModel } from './DistanceModel';
 import { default as Socket } from 'socket.io-client';
 
 export const DistanceCollection = Backbone.Collection.extend({
-    url: 'http://192.168.1.99:3030/distance',
+    url: function () {
+      return this.host + ':3030/distance';
+    },
+  
     model: DistanceModel,
     comparator: 'time',
   
-    initialize: function () {
+    initialize: function (models, options) {
+      this.host = options.host;
+
       this.listenTo(this, 'sync', this.startSocket); 
     }, 
   
+    doShift: function () {
+      if (this.length > 100) {
+        this.shift();
+      }
+    },
+
     startSocket: function () {
-      this.socket = Socket('http://192.168.1.99:3000/distance');
+      this.socket = Socket(this.host + ':3000/distance');
       
-      this.listenTo(this, 'add', this.shift);
+      this.listenTo(this, 'add', this.doShift);
   
       this.socket.on('connect', () => this.connected = true);
       this.socket.on('distance',  data => this.add(new DistanceModel(data)));
@@ -24,7 +35,7 @@ export const DistanceCollection = Backbone.Collection.extend({
     stopSocket: function () {
       if (!this.socket) return;
   
-      this.stopListening(this, 'add', this.shift);
+      this.stopListening(this, 'add', this.doShift);
   
       this.socket.close();
     },

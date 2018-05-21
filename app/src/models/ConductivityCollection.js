@@ -1,18 +1,18 @@
 import { default as Backbone } from 'backbone';
-import { TemperatureModel } from './TemperatureModel';
+import { ConductivityModel } from './ConductivityModel';
 import { default as Socket } from 'socket.io-client';
 
-export const TemperatureCollection = Backbone.Collection.extend({
+export const ConductivityCollection = Backbone.Collection.extend({
     url: function () {
-      return this.host + ':3030/temperature';
+      return this.host + ':3030/conductivity';
     },
-
-    model: TemperatureModel,
+    
+    model: ConductivityModel,
     comparator: 'time',
   
     initialize: function (models, options) {
       this.host = options.host;
-      
+
       this.listenTo(this, 'sync', this.startSocket);
     }, 
   
@@ -23,12 +23,12 @@ export const TemperatureCollection = Backbone.Collection.extend({
     },
 
     startSocket: function () {
-      this.socket = Socket(this.host + ':3000/temperature');
+      this.socket = Socket(this.host + ':3000/conductivity');
       
       this.listenTo(this, 'add', this.doShift);
   
       this.socket.on('connect', () => this.connected = true);
-      this.socket.on('temperature',  data => this.add(new TemperatureModel(data)));
+      this.socket.on('conductivity',  data => this.add(new ConductivityModel(data)));
       this.socket.on('disconnect', () => this.connected = false);
     },
   

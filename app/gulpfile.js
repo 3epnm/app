@@ -22,8 +22,7 @@ const outfile = 'bundle.js'
 gulp.task('sass', function() {
   gulp.src('./src/sass/main.scss')
     .pipe(sass({ 
-      outputStyle: argv.production ? 'compressed' : undefined,
-      includePaths: [ resetCSS ] 
+      outputStyle: argv.production ? 'compressed' : undefined
     }).on('error', sass.logError))
     .pipe(gulp.dest('./app'))
 })
@@ -48,7 +47,7 @@ gulp.task('watch', ['sass'], function(cb) {
 
 //the distribution bundle task
 gulp.task('bundle', ['sass'], function() {
-  var bundler = browserify(entry, { transform: babelify })
+  var bundler = browserify(entry, { transform: [babelify, hbsify] })
         .bundle()
   return bundler
     .pipe(source('index.js'))

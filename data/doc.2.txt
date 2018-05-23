@@ -1,0 +1,58 @@
+rrdtool create temperature.rrd \
+	--step 300 \
+	DS:temp0:GAUGE:1200:-40:80 \
+	DS:temp1:GAUGE:1200:-40:80 \
+	DS:temp2:GAUGE:1200:-40:80 \
+	DS:temp3:GAUGE:1200:-40:80 \
+	RRA:AVERAGE:0.5:1:960 \
+	RRA:MIN:0.5:96:3600 \
+	RRA:MAX:0.5:96:3600 \
+	RRA:AVERAGE:0.5:96:3600
+
+rrdtool create cond.rrd \
+	--step 90 \
+	DS:ec:GAUGE:1200:-40:80 \
+	DS:tds:GAUGE:1200:-40:80 \
+	DS:sal:GAUGE:1200:-40:80 \
+	DS:sg:GAUGE:1200:-40:80 \
+	RRA:AVERAGE:0.5:1:960 \
+	RRA:MIN:0.5:96:3600 \
+	RRA:MAX:0.5:96:3600 \
+	RRA:AVERAGE:0.5:96:3600
+
+rrdtool create ph.rrd \
+	--step 90 \
+	DS:ph:GAUGE:1200:-40:80 \
+	RRA:AVERAGE:0.5:1:960 \
+	RRA:MIN:0.5:96:3600 \
+	RRA:MAX:0.5:96:3600 \
+	RRA:AVERAGE:0.5:96:3600
+
+rrdtool create ph.rrd \
+	--step '90' \
+	'DS:ph:GAUGE:180:U:U' \
+	'RRA:AVERAGE:0.5:1:86400' \
+	'RRA:AVERAGE:0.5:2:172800' \
+	'RRA:AVERAGE:0.5:5:432.000' \
+	'RRA:AVERAGE:0.5:10:864.000'
+
+rrdtool create cond.rrd \
+	--step '90' \
+	'DS:ec:GAUGE:180:U:U' \
+	'DS:tds:GAUGE:180:U:U' \
+	'DS:sal:GAUGE:180:U:U' \
+	'DS:sg:GAUGE:180:U:U' \
+	'RRA:AVERAGE:0.5:1:86400' \
+	'RRA:AVERAGE:0.5:2:172800' \
+	'RRA:AVERAGE:0.5:5:432.000' \
+	'RRA:AVERAGE:0.5:10:864.000'
+
+sshfs pi@192.168.1.217: pi
+raspberrypi:9966/
+
+rrdtool graph tempday.png \
+	-s 'now - 1000s' -e 'now' \
+	DEF:temp0=/var/data/temperature.rrd:temp0:AVERAGE \
+	LINE2:temp0#00FF00:Innen \
+	VDEF:temp0last=temp0,LAST \
+	"GPRINT:temp0last:%.1lf °C"

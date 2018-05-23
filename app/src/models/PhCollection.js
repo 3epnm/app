@@ -1,8 +1,8 @@
-import { default as Backbone } from 'backbone';
+import { BaseSensorCollection } from './BaseSensorCollection';
 import { PhModel } from './PhModel';
 import { default as Socket } from 'socket.io-client';
 
-export const PhCollection = Backbone.Collection.extend({
+export const PhCollection = BaseSensorCollection.extend({
     url: function () {
       return this.host + ':3030/ph';
     },
@@ -15,12 +15,6 @@ export const PhCollection = Backbone.Collection.extend({
 
       this.listenTo(this, 'sync', this.startSocket); 
     }, 
-  
-    doShift: function () {
-      if (this.length > 100) {
-        this.shift();
-      }
-    },
 
     startSocket: function () {
       this.socket = Socket(this.host + ':3000/ph');

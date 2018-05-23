@@ -37,7 +37,8 @@ app.get('/temperature', function (req, res, next) {
         "temp1": "28FFE356911501C3"
     };
 
-    var start = rrdtool.now() - 3600;
+    let duration = req.query.duration || 3600;
+    var start = rrdtool.now() - duration;
     var end = rrdtool.now();
 
     temperature_db.fetch('AVERAGE', start, end, function (err, data) {
@@ -65,7 +66,8 @@ app.get('/temperature', function (req, res, next) {
 app.get('/distance', function (req, res, next) {
     var distance_db = rrdtool.open('/home/pi/Development/data/distance.rrd');
 
-    var start = rrdtool.now() - 3600;
+    let duration = req.query.duration || 3600;
+    var start = rrdtool.now() - duration;
     var end = rrdtool.now();
 
     distance_db.fetch('AVERAGE', start, end, function (err, data) {
@@ -85,7 +87,8 @@ app.get('/distance', function (req, res, next) {
 app.get('/ph', function (req, res, next) {
     var ph_db = rrdtool.open('/home/pi/Development/data/ph.rrd');
 
-    var start = rrdtool.now() - 3600;
+    let duration = req.query.duration || 3600;
+    var start = rrdtool.now() - duration;
     var end = rrdtool.now();
 
     ph_db.fetch('AVERAGE', start, end, function (err, data) {
@@ -111,7 +114,8 @@ app.get('/conductivity', function (req, res, next) {
         "sal": "sal"
     };
 
-    var start = rrdtool.now() - 3600;
+    let duration = req.query.duration || 3600;
+    var start = rrdtool.now() - duration;
     var end = rrdtool.now();
 
     temperature_db.fetch('AVERAGE', start, end, function (err, data) {

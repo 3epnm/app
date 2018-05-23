@@ -18,8 +18,8 @@ export const distanceSensorModel = new SensorModel({
 
 export const phSensorModel = new SensorModel({
     'title': 'Ph',
-    'min': 4,
-    'max': 8,
+    'min': 0,
+    'max': 14,
     'sensors': [{
         'color': '#ff0000',
         'name': 'ph',
@@ -108,6 +108,7 @@ export const salSensorModel = new SensorModel({
 
 export const tdsSensorModel = new SensorModel({
     'title': 'Tds',
+    'time': 5,
     // 'min': 4,
     // 'max': 8,
     'sensors': [{      
@@ -119,7 +120,7 @@ export const tdsSensorModel = new SensorModel({
 
 export const ecSensorModel = new SensorModel({
     'title': 'Ec',
-    'unit': '',
+    'time': 20,
     // 'min': 4,
     // 'max': 8,
     'sensors': [{    
@@ -138,4 +139,5 @@ dashboardCollection.add(switchesModel);
 qualityCollection.add(phSensorModel);
 qualityCollection.add(ecSensorModel);
 qualityCollection.add(tdsSensorModel);
-qualityCollection.add(salSensorModel);
+// qualityCollection.add(salSensorModel);
+qualityCollection.add(switchesModel);

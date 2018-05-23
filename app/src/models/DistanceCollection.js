@@ -1,8 +1,8 @@
-import { default as Backbone } from 'backbone';
+import { BaseSensorCollection } from './BaseSensorCollection';
 import { DistanceModel } from './DistanceModel';
 import { default as Socket } from 'socket.io-client';
 
-export const DistanceCollection = Backbone.Collection.extend({
+export const DistanceCollection = BaseSensorCollection.extend({
     url: function () {
       return this.host + ':3030/distance';
     },
@@ -15,13 +15,7 @@ export const DistanceCollection = Backbone.Collection.extend({
 
       this.listenTo(this, 'sync', this.startSocket); 
     }, 
-  
-    doShift: function () {
-      if (this.length > 100) {
-        this.shift();
-      }
-    },
-
+    
     startSocket: function () {
       this.socket = Socket(this.host + ':3000/distance');
       

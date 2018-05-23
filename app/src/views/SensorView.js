@@ -37,7 +37,7 @@ export const SensorView = Mn.View.extend({
               type: 'time',
               time: {
                 unit: 'minute',
-                min: moment().subtract(5, 'minutes'),
+                min: moment().subtract(this.model.get('time') || 5, 'minutes'),
                 max: moment(),
                 displayFormats: {
                   minute: 'mm'
@@ -71,7 +71,7 @@ export const SensorView = Mn.View.extend({
     update: function (model) {
       if (!this.chart) return;
 
-      this.chart.options.scales.xAxes[0].time.min = moment().subtract(2, 'minutes');
+      this.chart.options.scales.xAxes[0].time.min = moment().subtract(this.model.get('time') || 5, 'minutes');
       this.chart.options.scales.xAxes[0].time.max = moment();
 
       let text = [];

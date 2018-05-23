@@ -6,7 +6,7 @@ from numpy import median
 import atexit
 import traceback
 import multiprocessing
-
+   
 GPIO.setmode(GPIO.BCM)
 GPIO.setwarnings(False) 
 
@@ -15,7 +15,7 @@ GPIO_ECHO = 24
  
 GPIO.setup(GPIO_TRIGGER, GPIO.OUT)
 GPIO.setup(GPIO_ECHO, GPIO.IN)
- 
+
 def distance():
    GPIO.output(GPIO_TRIGGER, True)
    time.sleep(0.00001)
@@ -59,7 +59,6 @@ def readDistance():
    print("%s, %s cm" % (time.strftime("%Y-%m-%d %H:%M:%S"), value))
 
    GPIO.output(GPIO_TRIGGER, False)        
-   time.sleep(1.5)
 
 def exit_handler():
    print 'exit'
@@ -69,7 +68,17 @@ atexit.register(exit_handler)
 
 try:  
    while True:
-      readDistance()
+      p = multiprocessing.Process(target=readDistance)
+      p.start()
+
+      p.join(5)
+
+      if p.is_alive():
+         print 'readDistance timed out, killed'
+         p.terminate()
+
+      time.sleep(1.5)
+      p.terminate()
 
 except KeyboardInterrupt:
    traceback.print_exc()

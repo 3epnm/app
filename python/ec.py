@@ -105,10 +105,10 @@ try:
       else:
          values = value.split(",")
 
-#         print("%s" % (time.strftime("%Y-%m-%d %H:%M:%S")))
-#         print(u"   %s \u03bcS/cm" % (values[0]))
-#         print("   %s ppm" % (values[1]))
-#         print("   %s PSU" % (values[2]))
+         print("%s" % (time.strftime("%Y-%m-%d %H:%M:%S")))
+         print("   %s mS/cm" % (values[0]))
+         print("   %s ppm" % (values[1]))
+         print("   %s PSU" % (values[2]))
 
          rrd_update('/home/pi/Development/data/cond.rrd', 'N:%s:%s:%s:%s' %(values[0],values[1],values[2],values[3]))
 

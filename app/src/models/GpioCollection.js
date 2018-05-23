@@ -9,7 +9,8 @@ export const GpioCollection = Backbone.Collection.extend({
     },
 
     model: GpioModel,
-  
+    comparator: 'gpio',
+
     initialize: function (models, options) {
       this.host = options.host;
 

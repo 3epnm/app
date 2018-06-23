@@ -5,6 +5,9 @@ import { SensorView } from './SensorView';
 import { SwitchesModel } from '../models/SwitchesModel';
 import { SwitchesLayout } from './SwitchesLayout';
 
+import { TimedSwitchesModel } from '../models/TimedSwitchesModel';
+import { TimedSwitchesLayout } from './TimedSwitchesLayout';
+
 export const Dashboard = Mn.CollectionView.extend({
     className: 'dashboard',
   
@@ -13,6 +16,8 @@ export const Dashboard = Mn.CollectionView.extend({
         return SensorView;
       } else if (model instanceof SwitchesModel) {
         return SwitchesLayout;
+      } else if (model instanceof TimedSwitchesModel) {
+        return TimedSwitchesLayout;
       }
     }
   });

@@ -1,21 +1,61 @@
-  <div class="mdl-card__title">
-    <canvas class="chart"></canvas>
-  </div>
-  <div class="mdl-card__supporting-text">
-    {{title}}
-    <span class="lastValue"></span> 
-  </div>
-  <div class="mdl-card__actions mdl-card--border">
-    {{!-- #each sensors}}
-        <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="checkbox-{{name}}">
-            <input type="checkbox" id="checkbox-{{name}}" class="mdl-checkbox__input" checked>
-            <span class="mdl-checkbox__label">{{name}}</span>
-        </label>
-    {{/each --}}
-  </div>
-  <div class="mdl-card__menu">
-    <button class="mdl-button mdl-button--icon mdl-js-button mdl-js-ripple-effect">
-      <i class="material-icons">settings</i>
-    </button>
-  </div>
-
+<div class="mdl-card__title">
+  <canvas class="chart"></canvas>
+</div>
+<div class="mdl-card__supporting-text">
+  {{title}}
+  <span class="lastValue"></span> 
+</div>
+<div class="mdl-card__menu">
+  <button class="mdl-button mdl-button--icon mdl-js-button mdl-js-ripple-effect settings">
+    <i class="material-icons">settings</i>
+  </button>
+</div>
+<div class="mdl-card__overlay">
+  <table class="mdl-data-table mdl-data-table--selectable settingstable">
+  <thead>
+      <tr>
+          <th class="mdl-data-table__cell--non-numeric">Parameter</th>
+          <th class="mdl-data-table__cell--non-numeric">Value</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+        <td class="mdl-data-table__cell--non-numeric">Range from</td>
+        <td class="mdl-data-table__cell--non-numeric">
+            <div class="mdl-textfield mdl-js-textfield">
+                <input class="mdl-textfield__input range-from" type="text" value="{{min}}"
+                    pattern="-?[0-9]*(\.[0-9]+)?">
+            </div>
+        </td>
+      </tr>
+      <tr>
+        <td class="mdl-data-table__cell--non-numeric">Range to</td>
+        <td class="mdl-data-table__cell--non-numeric">
+            <div class="mdl-textfield mdl-js-textfield">
+                <input class="mdl-textfield__input range-to" type="text" value="{{max}}"
+                    pattern="-?[0-9]*(\.[0-9]+)?">
+            </div>
+        </td>
+      </tr>
+      <tr>
+        <td class="mdl-data-table__cell--non-numeric">Time Scale</td>
+        <td class="mdl-data-table__cell--non-numeric">
+            <div class="mdl-textfield mdl-js-textfield">
+                <input class="mdl-textfield__input time-range" type="text" value="{{time}}"
+                    pattern="-?[0-9]*(\.[0-9]+)?">
+            </div>
+        </td>
+      </tr>
+      <tr>
+        <td class="mdl-data-table__cell--non-numeric">Live Reading</td>
+        <td class="mdl-data-table__cell--non-numeric">
+          <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="list-switch-{{uuid}}">
+            <input type="checkbox" id="list-switch-{{uuid}}" class="mdl-switch__input"{{checked}} />
+          </label> 
+        </td>      
+      </tr>
+  </tbody>
+  </table>
+  <button class="mdl-button mdl-js-button mdl-js-ripple-effect close-settings">close</button>
+  <button class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--primary save-settings">save</button>
+</div>

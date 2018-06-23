@@ -11,7 +11,7 @@ export const PhModel = Backbone.Model.extend({
 
         return {
             x: new Date(this.get('time') * 1000),
-            y: precisionRound(this.get('ph'), 1)
+            y: precisionRound(this.get('ph'), 2)
         }
     }
 });

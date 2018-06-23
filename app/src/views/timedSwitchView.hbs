@@ -1,0 +1,18 @@
+<td class="mdl-data-table__cell--non-numeric">{{label}}</td>
+<td class="mdl-data-table__cell--non-numeric">
+    <div class="mdl-textfield mdl-js-textfield">
+        <input class="mdl-textfield__input" type="text" value="{{speed}}"
+            pattern="-?[0-9]*(\.[0-9]+)?" id="list-switch-{{gpio}}-speed">
+    </div>
+</td>
+<td class="mdl-data-table__cell--non-numeric">
+    <div class="mdl-textfield mdl-js-textfield">
+        <input class="mdl-textfield__input" type="text" value="{{timeout}}"
+            pattern="-?[0-9]*(\.[0-9]+)?" id="list-switch-{{gpio}}-timeout">
+    </div>
+</td>
+<td class="mdl-data-table__cell--non-numeric">
+    <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="list-switch-{{gpio}}-timed">
+        <input type="checkbox" id="list-switch-{{gpio}}-timed" class="mdl-switch__input"{{checked}} />
+    </label> 
+</td>

@@ -17,6 +17,8 @@ export const DistanceCollection = BaseSensorCollection.extend({
     }, 
     
     startSocket: function () {
+      this.stopSocket();
+      
       this.socket = Socket(this.host + ':3000/distance');
       
       this.listenTo(this, 'add', this.doShift);
@@ -34,9 +36,9 @@ export const DistanceCollection = BaseSensorCollection.extend({
       this.socket.close();
     },
   
-    getSeries: function (sensor) {
+    getSeries: function (sensor, unit) {
       return this.map((model) => {
-        return model.getData(sensor)
+        return model.getData(sensor, unit)
       });
     }
   });

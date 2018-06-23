@@ -5,6 +5,32 @@ var redis = require("redis");
 
 var io = require('socket.io')(server);
 
+var subscribeTimedGpio = function (client) {
+    var redis_client = redis.createClient();
+
+    redis_client.on('message', function (channel, message) {
+        message = JSON.parse(message);
+        client.emit('timedgpio', message);
+    });
+
+    redis_client.subscribe('timedgpio:state');
+
+    client.on('timedgpio', function (message) {
+        var redis_publish = redis.createClient();
+        console.log(message);
+        redis_publish.publish('timedgpio:set', JSON.stringify(message));
+    });
+
+    client.on('disconnect', function() {
+        redis_client.unsubscribe();
+        redis_client.quit();
+    });
+}
+
+io.of('/timedgpio').on('connection', function(client) {
+    subscribeTimedGpio(client);
+});
+
 var subscribeGpio = function (client) {
     var redis_client = redis.createClient();
 
@@ -17,6 +43,7 @@ var subscribeGpio = function (client) {
 
     client.on('gpio', function (message) {
         var redis_publish = redis.createClient();
+        // console.log(message);
         redis_publish.publish('gpio:set', JSON.stringify(message));
     });
 

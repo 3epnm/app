@@ -26,11 +26,11 @@ app.get('/gpio', function (req, res, next) {
                 }            
             });
         });
-    });    
+    });   
 });
 
 app.get('/temperature', function (req, res, next) {
-    var temperature_db = rrdtool.open('/home/pi/Development/data/temperature.rrd');
+    var temperature_db = rrdtool.open('/home/pi/Development/data/temperature2.rrd');
 
     var map_data = {
         "temp0": "28FF8C56911501BD",
@@ -66,7 +66,7 @@ app.get('/temperature', function (req, res, next) {
 app.get('/distance', function (req, res, next) {
     var distance_db = rrdtool.open('/home/pi/Development/data/distance.rrd');
 
-    let duration = req.query.duration || 3600;
+    let duration = req.query.duration || 300;
     var start = rrdtool.now() - duration;
     var end = rrdtool.now();
 
@@ -85,9 +85,9 @@ app.get('/distance', function (req, res, next) {
 });
 
 app.get('/ph', function (req, res, next) {
-    var ph_db = rrdtool.open('/home/pi/Development/data/ph.rrd');
+    var ph_db = rrdtool.open('/home/pi/Development/data/ph2.rrd');
 
-    let duration = req.query.duration || 3600;
+    let duration = req.query.duration || 300;
     var start = rrdtool.now() - duration;
     var end = rrdtool.now();
 
@@ -106,7 +106,7 @@ app.get('/ph', function (req, res, next) {
 });
 
 app.get('/conductivity', function (req, res, next) {
-    var temperature_db = rrdtool.open('/home/pi/Development/data/cond.rrd');
+    var temperature_db = rrdtool.open('/home/pi/Development/data/cond2.rrd');
 
     var map_data = {
         "ec": "ec",

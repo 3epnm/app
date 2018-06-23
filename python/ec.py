@@ -93,28 +93,30 @@ def exit_handler():
 atexit.register(exit_handler)
 
 try:
+   rs = redis.StrictRedis(host="localhost", port=6379, db=0)
+   
    r = redis.StrictRedis(host="localhost", port=6379, db=0)
+   p = r.pubsub()
+   p.subscribe('ec:read')
 
    device = AtlasI2C()
 
    while True:
-      value = device.query("R")
+      message = p.get_message()
+      if message:
+         if message["type"] == "message" and message["channel"] == "ec:read":
+            value = device.query("R")
 
-      if value.startswith("Error"):
-         print(value)
-      else:
-         values = value.split(",")
+            if value.startswith("Error"):
+               print(value)
+            else:
+               values = value.split(",")
 
-         print("%s" % (time.strftime("%Y-%m-%d %H:%M:%S")))
-         print("   %s mS/cm" % (values[0]))
-         print("   %s ppm" % (values[1]))
-         print("   %s PSU" % (values[2]))
+               print("%s, %s mS/cmm, %s ppm, %s PSU" % (time.strftime("%Y-%m-%d %H:%M:%S"), values[0], values[1], values[2]))
 
-         rrd_update('/home/pi/Development/data/cond.rrd', 'N:%s:%s:%s:%s' %(values[0],values[1],values[2],values[3]))
+               rrd_update('/home/pi/Development/data/cond2.rrd', 'N:%s:%s:%s:%s' %(values[0],values[1],values[2],values[3]))
 
-         r.publish('conductivity', '{ "ec": "%s", "tds": "%s", "sal": "%s" }' % (values[0],values[1],values[2]))
-
-      time.sleep(AtlasI2C.long_timeout)
+               r.publish('conductivity', '{ "ec": "%s", "tds": "%s", "sal": "%s" }' % (values[0],values[1],values[2]))
 
 except KeyboardInterrupt:
     traceback.print_exc()

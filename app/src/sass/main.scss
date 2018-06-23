@@ -42,11 +42,40 @@
       float: right;
     }
   }
+
+  .mdl-card__overlay {
+    width: calc(100% - 10px);
+    height: calc(100% - 10px);
+    position: absolute;
+    top: 5px;
+    left: 5px;
+    background-color: #fff;
+    display: none;
+
+    .save-settings {
+      position: absolute;
+      bottom: 5px;
+      right: 5px;
+    }
+
+    .close-settings {
+      position: absolute;
+      bottom: 5px;
+      right: 80px;
+    }
+  }
+
+  &.settings {
+    .mdl-card__overlay {
+      display: block;
+    }
+  }
 }
 
 .dashbord-card-wide {
   &.mdl-card {
     width: calc(50% - 20px);
+    max-width: 500px;
     margin: 10px;
     float: left;
   }
@@ -74,14 +103,52 @@
 
 .dashboard, .sensor {
   padding: 10px;
-  max-width: 1040px;
   margin: 0 auto;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
 }
 
 .switches {
   li {
     width: 50%;
     float: left;
+  }
+}
+
+.timedswitches-layout .mdl-card__title {
+  padding-top: 0px;
+}
+
+.timedswitches, .settingstable {
+  width: 100%;
+  border: none;
+
+  color: rgba(0,0,0,.87);
+
+  // th:first-of-type,
+  // td:first-of-type {
+  //   padding-left: 0px;
+  // }
+  
+  .mdl-textfield {
+    padding: 0px;
+    width: 100px;
+    input {
+      padding: 4px;
+    }
+  }
+
+  td {
+    border: none;
+  }
+
+  td:first-child {
+    width: 300px;
+  }
+
+  td:last-child {
+    width: 10px;
   }
 }
 
@@ -98,4 +165,11 @@
 
 .mdl-layout__content {
   background-color: #3f51b50d;
+}
+
+.svg_content svg {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
 }

@@ -93,20 +93,25 @@ def exit_handler():
 atexit.register(exit_handler)
 
 try:
+   rs = redis.StrictRedis(host="localhost", port=6379, db=0)
+   
    r = redis.StrictRedis(host="localhost", port=6379, db=0)
+   p = r.pubsub()
+   p.subscribe('ph:read')
 
    device = AtlasI2C()
 
    while True:
-      value = device.query("R")
+      message = p.get_message()
+      if message:
+         if message["type"] == "message" and message["channel"] == "ph:read":
+            value = device.query("R")
 
-      print("%s, ph: %s" % (time.strftime("%Y-%m-%d %H:%M:%S"), value))
-      
-      rrd_update('/home/pi/Development/data/ph.rrd', 'N:%s' % value)
+            print("%s, ph: %s" % (time.strftime("%Y-%m-%d %H:%M:%S"), value))
+            
+            rrd_update('/home/pi/Development/data/ph2.rrd', 'N:%s' % value)
 
-      r.publish('ph', value)
-      
-      time.sleep(AtlasI2C.long_timeout)
+            rs.publish('ph', value)
 
 except KeyboardInterrupt:
     traceback.print_exc()

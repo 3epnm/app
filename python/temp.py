@@ -36,7 +36,7 @@ try:
 
       r.publish('temperature', '{ "temp0": "%s", "temp1": "%s", "temp2": null, "temp3": null }' %(metric1, metric2))
         
-      rrd_update('/home/pi/Development/data/temperature.rrd', 'N:%s:%s:%s:%s' %(metric1, metric2, metric3, metric4))
+      rrd_update('/home/pi/Development/data/temperature2.rrd', 'N:%s:%s:%s:%s' %(metric1, metric2, metric3, metric4))
         
       time.sleep(1.5)
 

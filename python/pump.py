@@ -1,38 +1,75 @@
-#!/usr/bin/python
-from Adafruit_MotorHAT import Adafruit_MotorHAT, Adafruit_DCMotor
+import redis
+import RPi.GPIO as GPIO
+import json
 
 import time
 import atexit
 
-# create a default object, no changes to I2C address or frequency
+from Adafruit_MotorHAT import Adafruit_MotorHAT, Adafruit_DCMotor
+
 mh = Adafruit_MotorHAT(addr=0x60)
 
-# recommended for auto-disabling motors on shutdown!
 def turnOffMotors():
     mh.getMotor(1).run(Adafruit_MotorHAT.RELEASE)
     mh.getMotor(2).run(Adafruit_MotorHAT.RELEASE)
     mh.getMotor(3).run(Adafruit_MotorHAT.RELEASE)
     mh.getMotor(4).run(Adafruit_MotorHAT.RELEASE)
 
+turnOffMotors()
+
 atexit.register(turnOffMotors)
 
-################################# DC motor test!
-myMotor = mh.getMotor(3)
+MOTOR_CHANNELS = {
+    "A" : 1, 
+    "B" : 2,
+    "C" : 3,
+    "D" : 4
+}
 
-# set the speed to start, from 0 (off) to 255 (max speed)
-# myMotor.setSpeed(130)
-myMotor.setSpeed(255)
-myMotor.run(Adafruit_MotorHAT.FORWARD);
-# turn on motor
-myMotor.run(Adafruit_MotorHAT.RELEASE);
+rs = redis.StrictRedis(host="localhost", port=6379, db=0)
 
+def low(channel):
+    message = '{ "gpio": "%s", "state": "low" }' % channel
 
-myMotor.run(Adafruit_MotorHAT.FORWARD)
+    rs.set('timedgpio:state:%s' % channel, message)
+    rs.publish('timedgpio:state', message)
 
-time.sleep(2.0)
+    motor = mh.getMotor(MOTOR_CHANNELS[channel])
+    motor.run(Adafruit_MotorHAT.RELEASE)
 
-myMotor.run(Adafruit_MotorHAT.BACKWARD)
+def high(channel, speed, timeout):
+    message = '{ "gpio": "%s", "state": "high", "speed": "%s", "timeout": "%s" }' % (channel, speed, timeout)
+    
+    motor = mh.getMotor(MOTOR_CHANNELS[channel])
+    motor.setSpeed(int(speed))
 
-time.sleep(0.5)
+    motor.run(Adafruit_MotorHAT.FORWARD);
 
-myMotor.run(Adafruit_MotorHAT.RELEASE)
+    rs.set('timedgpio:state:%s' % channel, message)
+    rs.publish('timedgpio:state', message)
+
+    time.sleep(float(timeout))
+
+    motor.run(Adafruit_MotorHAT.RELEASE)
+    
+    low(channel=channel)
+
+try:    
+    r = redis.StrictRedis(host="localhost", port=6379, db=0)
+    p = r.pubsub()
+    p.subscribe('timedgpio:set')
+    
+    while True:
+        message = p.get_message()
+        if message:
+            if message["type"] == "message" and message["channel"] == "timedgpio:set":
+                data = json.loads(message['data'])
+                if data["state"] == 'high':
+                    high(channel=data["gpio"], speed=data["speed"], timeout=data["timeout"])
+                if data["state"] == 'low':
+                    low(channel=data["gpio"])
+        time.sleep(0.001)
+
+except KeyboardInterrupt:
+    print ''
+    print 'pump is ending'

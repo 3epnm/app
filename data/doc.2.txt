@@ -1,51 +1,59 @@
-rrdtool create temperature.rrd \
-	--step 300 \
-	DS:temp0:GAUGE:1200:-40:80 \
-	DS:temp1:GAUGE:1200:-40:80 \
-	DS:temp2:GAUGE:1200:-40:80 \
-	DS:temp3:GAUGE:1200:-40:80 \
-	RRA:AVERAGE:0.5:1:960 \
-	RRA:MIN:0.5:96:3600 \
-	RRA:MAX:0.5:96:3600 \
-	RRA:AVERAGE:0.5:96:3600
+screen -dmS service bash -c 'echo waiting 5 senconds...; sleep 5; exec nodemon service'
+screen -dmS socket bash -c 'echo waiting 5 senconds...; sleep 5; exec nodemon socket'
+screen -dmS cron bash -c 'echo waiting 5 senconds...; sleep 5; exec nodemon cron'
+screen -dmS rrd bash -c 'echo waiting 5 senconds...; sleep 5; exec nodemon rrd'
+screen -dmS app bash -c 'echo waiting 5 senconds...; sleep 5; exec npm start'
 
-rrdtool create cond.rrd \
-	--step 90 \
-	DS:ec:GAUGE:1200:-40:80 \
-	DS:tds:GAUGE:1200:-40:80 \
-	DS:sal:GAUGE:1200:-40:80 \
-	DS:sg:GAUGE:1200:-40:80 \
-	RRA:AVERAGE:0.5:1:960 \
-	RRA:MIN:0.5:96:3600 \
-	RRA:MAX:0.5:96:3600 \
-	RRA:AVERAGE:0.5:96:3600
 
-rrdtool create ph.rrd \
-	--step 90 \
-	DS:ph:GAUGE:1200:-40:80 \
-	RRA:AVERAGE:0.5:1:960 \
-	RRA:MIN:0.5:96:3600 \
-	RRA:MAX:0.5:96:3600 \
-	RRA:AVERAGE:0.5:96:3600
+rrdtool create temperature2.rrd \
+--step 2 \
+DS:temp0:GAUGE:60:-40:85 \
+DS:temp1:GAUGE:60:-40:85 \
+DS:temp2:GAUGE:60:-40:85 \
+DS:temp3:GAUGE:60:-40:85 \
+RRA:AVERAGE:0.5:1:864000 \
+RRA:AVERAGE:0.5:60:129600 \
+RRA:AVERAGE:0.5:3600:13392 \
+RRA:AVERAGE:0.5:86400:3660
 
-rrdtool create ph.rrd \
-	--step '90' \
-	'DS:ph:GAUGE:180:U:U' \
-	'RRA:AVERAGE:0.5:1:86400' \
-	'RRA:AVERAGE:0.5:2:172800' \
-	'RRA:AVERAGE:0.5:5:432.000' \
-	'RRA:AVERAGE:0.5:10:864.000'
+rrdtool create cond2.rrd \
+--step 2 \
+DS:ec:GAUGE:60:0:U \
+DS:tds:GAUGE:60:0:U \
+DS:sal:GAUGE:60:0:U \
+DS:sg:GAUGE:60:0:U \
+RRA:AVERAGE:0.5:1:864000 \
+RRA:AVERAGE:0.5:60:129600 \
+RRA:AVERAGE:0.5:3600:13392 \
+RRA:AVERAGE:0.5:86400:3660
 
-rrdtool create cond.rrd \
-	--step '90' \
-	'DS:ec:GAUGE:180:U:U' \
-	'DS:tds:GAUGE:180:U:U' \
-	'DS:sal:GAUGE:180:U:U' \
-	'DS:sg:GAUGE:180:U:U' \
-	'RRA:AVERAGE:0.5:1:86400' \
-	'RRA:AVERAGE:0.5:2:172800' \
-	'RRA:AVERAGE:0.5:5:432.000' \
-	'RRA:AVERAGE:0.5:10:864.000'
+rrdtool create ph2.rrd \
+--step 2 \
+DS:ph:GAUGE:60:0:U \
+RRA:AVERAGE:0.5:1:864000 \
+RRA:AVERAGE:0.5:60:129600 \
+RRA:AVERAGE:0.5:3600:13392 \
+RRA:AVERAGE:0.5:86400:3660
+
+rrdtool create relais.rrd \
+--step 1 \
+DS:sw1:GAUGE:1:0:1 \
+DS:sw2:GAUGE:1:2:3 \
+DS:sw3:GAUGE:1:4:5 \
+DS:sw4:GAUGE:1:6:7 \
+DS:sw5:GAUGE:1:8:9 \
+DS:sw6:GAUGE:1:10:11 \
+DS:sw7:GAUGE:1:12:13 \
+DS:sw8:GAUGE:1:14:15 \
+RRA:AVERAGE:0.5:1:864000
+
+rrdtool create pump.rrd \
+--step 1 \
+DS:p1:GAUGE:1:0:1 \
+DS:p2:GAUGE:1:2:3 \
+DS:p3:GAUGE:1:4:5 \
+DS:p4:GAUGE:1:6:7 \
+RRA:AVERAGE:0.5:1:864000
 
 sshfs pi@192.168.1.217: pi
 raspberrypi:9966/
